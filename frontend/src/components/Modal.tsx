@@ -71,6 +71,16 @@ const ModalFrame = styled.div<{ visible: boolean }>`
   ${(props) => modalSettings(props.visible)}
 `;
 
+const SearchDiv = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+`;
+
+const SearchInput = styled.input`
+  outline: none;
+`;
+
 function Modal({ children, visible, onClose }: ModalBaseProps) {
   const [isOpen, setIsOpen] = useState(false);
 

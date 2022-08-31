@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import './App.css';
 import Title from './components/Title';
 import Swap from './components/Swap';
@@ -36,8 +38,30 @@ const Button = styled.button`
 
 function App() {
   const [visible, setVisible] = useState(false);
+  const API_KEY = process.env.REACT_APP_API_KEY;
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const result = async () => {
+      try {
+        const response = await axios.get(
+          '/v2/cryptocurrency/quotes/latest?symbol=BTC',
+          {
+            headers: {
+              Accept: 'application/json',
+              'X-CMC_PRO_API_KEY': API_KEY!,
+            },
+          }
+        );
+
+        console.log(response.data);
+      } catch (err) {
+        console.log('Error occured');
+        console.log(err);
+      }
+    };
+
+    result();
+  }, []);
   return (
     <Container>
       <Flexbox>
