@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Title from './components/Title';
 import Swap from './components/Swap';
 import styled from 'styled-components';
+import Modal from './components/Modal';
+import axios from 'axios';
 
 const Container = styled.div`
   display: flex;
@@ -33,6 +35,9 @@ const Button = styled.button`
 `;
 
 function App() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {}, []);
   return (
     <Container>
       <Flexbox>
@@ -43,12 +48,33 @@ function App() {
               padding: '16px',
             }}
           >
-            <Swap></Swap>
-            <Swap></Swap>
+            <Swap
+              modalOpen={visible}
+              openFunc={() => {
+                setVisible(!visible);
+              }}
+            ></Swap>
+            <Swap
+              modalOpen={visible}
+              openFunc={() => {
+                setVisible(!visible);
+              }}
+            ></Swap>
           </div>
-          <div>
+          <div
+            style={{
+              padding: '16px',
+            }}
+          >
             <Button>입력</Button>
           </div>
+          <Modal
+            children={<div>안녕하세요</div>}
+            visible={visible}
+            onClose={() => {
+              setVisible(!visible);
+            }}
+          ></Modal>
         </Main>
       </Flexbox>
     </Container>
