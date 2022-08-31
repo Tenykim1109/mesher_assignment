@@ -38,6 +38,7 @@ const Button = styled.button`
 
 function App() {
   const [visible, setVisible] = useState(false);
+  const API_KEY = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
     const result = async () => {
@@ -47,7 +48,7 @@ function App() {
           {
             headers: {
               Accept: 'application/json',
-              'X-CMC_PRO_API_KEY': 'acf3e980-ed38-44f2-8427-c09426e5b435',
+              'X-CMC_PRO_API_KEY': API_KEY!,
             },
           }
         );
