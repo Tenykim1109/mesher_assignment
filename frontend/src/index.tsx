@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -9,10 +10,15 @@ import { ThemeProvider } from 'styled-components';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const client = new QueryClient();
+
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <QueryClientProvider client={client}>
+        <App />
+      </QueryClientProvider>
     </ThemeProvider>
   </React.StrictMode>
 );
