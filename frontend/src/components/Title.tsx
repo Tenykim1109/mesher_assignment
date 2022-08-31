@@ -7,7 +7,8 @@ const DIV = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 8px 16px;
+  margin-top: 24px;
 `;
 
 const Button = styled.button`
@@ -16,22 +17,24 @@ const Button = styled.button`
   border-radius: 1;
 `;
 
-const Zap = styled(TbSettings)`
+const SettingsIcon = styled(TbSettings)`
   color: black;
 `;
 
 function Title() {
   return (
-    <DIV>
-      <p>스왑</p>
-      <Button
-        onClick={() => {
-          alert('준비 중입니다');
-        }}
-      >
-        <Zap />
-      </Button>
-    </DIV>
+    <div>
+      <DIV>
+        <div>스왑</div>
+        <Button
+          onClick={() => {
+            alert('준비 중입니다');
+          }}
+        >
+          <SettingsIcon />
+        </Button>
+      </DIV>
+    </div>
   );
 }
 
