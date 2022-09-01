@@ -10,3 +10,16 @@ export enum Token {
   CRV = 'CRV',
   ENS = 'ENS',
 }
+
+export const TokenList: Token[] = [
+  Token.WBTC,
+  Token.ENS,
+  Token.ETH,
+  Token.AAVE,
+  Token.USDC,
+  Token.USDT,
+  Token.DAI,
+  Token.AXS,
+  Token.COMP,
+  Token.CRV,
+];
