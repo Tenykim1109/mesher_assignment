@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.*
+
+# using Zero-installs
 .yarn/*
 !.yarn/cache
 !.yarn/patches
