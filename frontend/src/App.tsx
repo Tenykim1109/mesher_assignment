@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import React, { useState } from 'react';
+import { useAppSelector } from './modules/store';
 import './App.css';
 import Title from './components/Title';
 import Swap from './components/Swap';
 import styled from 'styled-components';
 import Modal from './components/Modal';
-import axios from 'axios';
 
 const Container = styled.div`
   display: flex;
@@ -38,66 +36,50 @@ const Button = styled.button`
 
 function App() {
   const [visible, setVisible] = useState(false);
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  const [finish, setFinish] = useState(false);
+  const [curModalSymbol, setCurModalSymbol] = useState('');
 
-  useEffect(() => {
-    const result = async () => {
-      try {
-        const response = await axios.get(
-          '/v2/cryptocurrency/quotes/latest?symbol=BTC',
-          {
-            headers: {
-              Accept: 'application/json',
-              'X-CMC_PRO_API_KEY': API_KEY!,
-            },
-          }
-        );
+  const { firstSymbol, modalSymbol } = useAppSelector((state) => state.symbol);
 
-        console.log(response.data);
-      } catch (err) {
-        console.log('Error occured');
-        console.log(err);
-      }
-    };
-
-    result();
-  }, []);
   return (
     <Container>
       <Flexbox>
         <Main>
-          <Title></Title>
+          <Title />
+          <Swap
+            modalOpen={visible}
+            defaultCoin={firstSymbol}
+            order={1}
+            openFunc={() => {
+              setVisible(!visible);
+            }}
+            modalInfo={setCurModalSymbol}
+            finish={finish}
+            setFinish={setFinish}
+          />
           <div
             style={{
               padding: '16px',
             }}
           >
-            <Swap
-              modalOpen={visible}
-              openFunc={() => {
-                setVisible(!visible);
+            {/* 금액 입력이 끝났을 때 버튼 활성화 */}
+            <Button
+              onClick={() => {
+                alert('준비 중입니다.');
               }}
-            ></Swap>
-            <Swap
-              modalOpen={visible}
-              openFunc={() => {
-                setVisible(!visible);
-              }}
-            ></Swap>
-          </div>
-          <div
-            style={{
-              padding: '16px',
-            }}
-          >
-            <Button>입력</Button>
+              disabled={!finish}
+            >
+              {finish ? '스왑' : '금액을 입력하세요'}
+            </Button>
           </div>
           <Modal
-            children={<div>안녕하세요</div>}
             visible={visible}
+            symbol={modalSymbol}
+            from={curModalSymbol}
             onClose={() => {
               setVisible(!visible);
             }}
+            setSymbol={setCurModalSymbol}
           ></Modal>
         </Main>
       </Flexbox>
