@@ -42,6 +42,8 @@
 ```Bash
 $ git clone https://github.com/Tenykim1109/mesher-assignments.git
 
+$ cd frontend
+
 $ yarn
 ```
 
