@@ -10,13 +10,10 @@ import {
 } from '../modules/slices/priceSlice';
 
 export type SwapProps = {
-  modalOpen: boolean;
-  defaultCoin: string;
-  order: number;
-  openFunc: () => void;
-  modalInfo: (str: string) => void;
-  finish: boolean;
-  setFinish: (finished: boolean) => void;
+  openFunc: () => void; // modal 여는 함수
+  modalInfo: (str: string) => void; // modal을 열 때 어느 쪽에서 열었는지 modal에 알려줌
+  finish: boolean; // 환전할 수량 입력이 끝났는지 체크
+  setFinish: (finished: boolean) => void; // finish 값 설정하는 useState 함수
 };
 
 const Container = styled.div`
@@ -68,15 +65,7 @@ const PriceDiv = styled.div<{ finished: boolean }>`
 
 const ArrowDown = styled(MdKeyboardArrowDown)``;
 
-function Swap({
-  modalOpen,
-  defaultCoin,
-  order,
-  openFunc,
-  modalInfo,
-  finish,
-  setFinish,
-}: SwapProps) {
+function Swap({ openFunc, modalInfo, finish, setFinish }: SwapProps) {
   const [inputVal, setInputVal] = useState('');
   const [inputVal2, setInputVal2] = useState('');
   const [dollarPrice, setDollarPrice] = useState('');

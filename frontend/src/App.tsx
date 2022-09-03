@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAppSelector } from './modules/store';
 import './App.css';
 import Title from './components/Title';
 import Swap from './components/Swap';
@@ -39,17 +38,12 @@ function App() {
   const [finish, setFinish] = useState(false);
   const [curModalSymbol, setCurModalSymbol] = useState('');
 
-  const { firstSymbol, modalSymbol } = useAppSelector((state) => state.symbol);
-
   return (
     <Container>
       <Flexbox>
         <Main>
           <Title />
           <Swap
-            modalOpen={visible}
-            defaultCoin={firstSymbol}
-            order={1}
             openFunc={() => {
               setVisible(!visible);
             }}
@@ -74,12 +68,10 @@ function App() {
           </div>
           <Modal
             visible={visible}
-            symbol={modalSymbol}
             from={curModalSymbol}
             onClose={() => {
               setVisible(!visible);
             }}
-            setSymbol={setCurModalSymbol}
           ></Modal>
         </Main>
       </Flexbox>

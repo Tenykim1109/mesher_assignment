@@ -6,11 +6,9 @@ import { useAppDispatch, useAppSelector } from '../modules/store';
 import { updateFirst, updateSecond } from '../modules/slices/symbolSlice';
 
 export type ModalBaseProps = {
-  visible: boolean;
-  symbol: string;
+  visible: boolean; // modal 열리면 true, 닫으면 false
   from: string; // 어느 컴포넌트에서 modal을 열었는지 확인
-  onClose: () => void;
-  setSymbol: (str: string) => void;
+  onClose: () => void; // modal 닫는 함수
 };
 
 // css fade-in, fade-out 효과
@@ -57,7 +55,7 @@ const Background = styled.div<{ visible: boolean }>`
   left: 0;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.5);
-  ${(props) => modalSettings(props.visible)}
+  ${(props: { visible: boolean }) => modalSettings(props.visible)}
 `;
 
 const TitleDiv = styled.div`
@@ -80,7 +78,7 @@ const ModalFrame = styled.div<{ visible: boolean }>`
   background-color: rgba(255, 255, 255, 1);
   flex-direction: column;
   border-radius: 10px;
-  ${(props) => modalSettings(props.visible)}
+  ${(props: { visible: boolean }) => modalSettings(props.visible)}
 `;
 
 const ModalBody = styled.div`
@@ -179,14 +177,33 @@ const Button = styled.button`
   border-radius: 10px;
 `;
 
-function Modal({ visible, symbol, from, onClose, setSymbol }: ModalBaseProps) {
+function Modal({ visible, from, onClose }: ModalBaseProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [list, setList] = useState(TokenList);
+  const [favorite, setFavorite] = useState(
+    localStorage.getItem('favorite') !== undefined
+      ? JSON.parse(localStorage.getItem('favorite')!)
+      : []
+  ); // 최근 사용한 Token 리스트 - localStorage에 저장된 값이 없으면 빈 배열로 설정
 
   const { firstSymbol, secondSymbol, modalSymbol } = useAppSelector(
     (state) => state.symbol
   );
   const dispatch = useAppDispatch();
 
+  // Token 이름으로 검색
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value === '' || e.target.value === null) {
+      setList(TokenList);
+    } else {
+      const filteredData = list.filter(
+        (row) => row.includes(e.target.value.toUpperCase()) // TokenList에는 대문자로만 저장되어 있으므로 대문자로 casting
+      );
+      setList(filteredData);
+    }
+  };
+
+  // modal animation이 끝난 후에 visible 값 변경
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (visible) {
@@ -219,16 +236,15 @@ function Modal({ visible, symbol, from, onClose, setSymbol }: ModalBaseProps) {
               </IconButton>
             </TitleDiv>
             <SearchDiv>
-              <SearchInput placeholder="이름 검색" />
+              <SearchInput placeholder="이름 검색" onChange={onSearch} />
             </SearchDiv>
             <GridFrame>
               <Wrapper>
-                <Chip>
-                  <div>ETP</div>
-                </Chip>
-                <Chip>
-                  <div>ETP</div>
-                </Chip>
+                {favorite.map((val: string, idx: number) => (
+                  <Chip key={idx}>
+                    <div>{val}</div>
+                  </Chip>
+                ))}
               </Wrapper>
             </GridFrame>
           </GridFrame>
@@ -247,7 +263,7 @@ function Modal({ visible, symbol, from, onClose, setSymbol }: ModalBaseProps) {
                 }}
               >
                 <div style={{ width: '100%' }}>
-                  {TokenList.map((val, idx) => (
+                  {list.map((val, idx) => (
                     <SymbolFrame
                       key={idx}
                       tabIndex={0}
@@ -276,6 +292,33 @@ function Modal({ visible, symbol, from, onClose, setSymbol }: ModalBaseProps) {
                                 dispatch(updateSecond(val));
                               }
                               break;
+                          }
+
+                          // localStorage에 저장된 것이 없다면 초기화해줌
+                          if (localStorage.getItem('favorite') === null) {
+                            let arr = [val];
+                            setFavorite(arr);
+                            localStorage.setItem(
+                              'favorite',
+                              JSON.stringify(arr)
+                            );
+                          } else {
+                            let arr = JSON.parse(
+                              localStorage.getItem('favorite')!
+                            );
+
+                            // 최근 사용한 리스트에 없는데 리스트 길이가 7 이상이면 가장 앞의 원소 삭제 후 추가
+                            if (!arr.includes(val) && arr.length >= 7) {
+                              arr = [...arr.slice(1), val];
+                            } else if (!arr.includes(val)) {
+                              arr = [...arr, val];
+                            }
+
+                            setFavorite(arr);
+                            localStorage.setItem(
+                              'favorite',
+                              JSON.stringify(arr)
+                            );
                           }
                           onClose();
                         }
